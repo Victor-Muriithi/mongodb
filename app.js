@@ -2,6 +2,11 @@ const express = require('express')
 const { getDb, connectToDb } = require('./db')
 const { ObjectId } = require('mongodb')
 
+require('dotenv').config()
+
+
+port = process.env.PORT || 5001
+
 // init app & middleware
 const app = express()
 app.use(express.json())
@@ -11,8 +16,8 @@ let db
 
 connectToDb((err) => {
   if(!err){
-    app.listen('3000', () => {
-      console.log('app listening on port 3000')
+    app.listen(port, () => {
+      console.log(`app listening on port ${port}`)
     })
     db = getDb()
   }
@@ -21,16 +26,15 @@ connectToDb((err) => {
 // routes
 app.get('/books', (req, res) => {
   // current page
-  const page = req.query.p || 0
-  const booksPerPage = 3
+  // const page = req.query.p || 0
+  // const booksPerPage = 3
   
-  let books = []
-
-  db.collection('books')
-    .find()
-    .sort({author: 1})
-    .skip(page * booksPerPage)
-    .limit(booksPerPage)
+  let books = [];
+db.collection('books')
+        .find()
+    // .sort({author: 1})
+    // .skip(page * booksPerPage)
+    // .limit(booksPerPage)
     .forEach(book => books.push(book))
     .then(() => {
       res.status(200).json(books)
@@ -64,6 +68,19 @@ app.post('/books', (req, res) => {
 
   db.collection('books')
     .insertOne(book)
+    .then(result => {
+      res.status(201).json(result)
+    })
+    .catch(err => {
+      res.status(500).json({err: 'Could not create new document'})
+    })
+})
+
+app.post('/manybooks', (req, res) => {
+  const book = req.body
+
+  db.collection('books')
+    .insertMany(book)
     .then(result => {
       res.status(201).json(result)
     })

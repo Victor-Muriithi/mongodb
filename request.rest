@@ -1,0 +1,22 @@
+GET  http://localhost:5000/books
+
+####
+
+POST  http://localhost:5000/books
+Content-Type: application/json
+
+        {
+            "id": "2375753",
+            "title": "Flask Web Development",
+            "author": "Miguel Grinberg",
+            "author_firstname": null
+        }
+
+####
+GET http://localhost:5000/getAllUsers
+
+####
+
+GET http://localhost:5000/getAllCounties
+
+####
